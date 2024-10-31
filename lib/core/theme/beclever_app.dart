@@ -1,5 +1,5 @@
+import 'package:challange_beclever/core/config/router/router.dart';
 import 'package:challange_beclever/core/utils/constants/colors.dart';
-import 'package:challange_beclever/features/auth/presentation/ui/pages/lander_page.dart';
 import 'package:flutter/material.dart';
 
 class BecleverApp extends StatelessWidget {
@@ -7,13 +7,13 @@ class BecleverApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Beclever challange',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: kPrimaryColor),
         useMaterial3: true,
       ),
-      home: const LanderPage(),
+      routerConfig: router,
     );
   }
 }
