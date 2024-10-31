@@ -1,3 +1,4 @@
+import 'package:challange_beclever/core/config/router/routes.dart';
 import 'package:challange_beclever/core/theme/extensions/theme_buttons_extension.dart';
 import 'package:challange_beclever/core/utils/extensions/context.dart';
 import 'package:flutter/material.dart';
@@ -53,12 +54,16 @@ class _FloatingButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    const RegisterRoute().go(context);
+                  },
                   style: context.theme.buttonOutline,
                   child: const Center(child: Text('Crear cuenta'))),
               const SizedBox(height: 18),
               ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    const LoginRoute().go(context);
+                  },
                   style: context.theme.buttonFilled,
                   child: const Center(child: Text('Ingresar'))),
             ],
