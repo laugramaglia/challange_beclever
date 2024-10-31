@@ -18,8 +18,16 @@ extension ThemeButtonsExtension on ThemeData {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
-        side: BorderSide(
-          color: colorScheme.primary,
+      ).copyWith(
+// Optional: Change text color when disabled
+        side: WidgetStateProperty.resolveWith<BorderSide?>(
+          (Set<WidgetState> states) {
+            if (states.contains(WidgetState.disabled)) {
+              return null; // Set border color to gray when disabled
+            }
+            return BorderSide(
+                color: colorScheme.primary); // Default border color
+          },
         ),
       );
 }
