@@ -5,8 +5,8 @@ import 'package:intl/intl.dart';
 enum TextInputValidators { required, email, number, arIdNumber, arMobile }
 
 class TextFieldWidget extends StatefulWidget {
+  final String? initialValue;
   final String labelText;
-  final TextEditingController? controller;
   final TextInputType keyboardType;
   final bool isPass;
   final List<TextInputValidators> validators;
@@ -14,8 +14,8 @@ class TextFieldWidget extends StatefulWidget {
   final Function(String value, String? error)? onChange;
   const TextFieldWidget({
     super.key,
+    this.initialValue,
     required this.labelText,
-    this.controller,
     this.keyboardType = TextInputType.text,
     this.isPass = false,
     this.validators = const [],
@@ -28,7 +28,21 @@ class TextFieldWidget extends StatefulWidget {
 }
 
 class _TextFieldWidgetState extends State<TextFieldWidget> {
+  late final TextEditingController controller;
+
   String? error;
+
+  @override
+  initState() {
+    super.initState();
+    controller = TextEditingController(text: widget.initialValue);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => Column(
@@ -40,7 +54,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
             onTapOutside: (event) {
               FocusScope.of(context).unfocus();
             },
-            controller: widget.controller,
+            controller: controller,
             obscureText: widget.isPass,
             keyboardType: widget.keyboardType,
             inputFormatters: widget.inputFormatters,
@@ -96,6 +110,8 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
                           : null,
         }
     ].where((e) => e != null).join(', ');
+
+    if (error?.isEmpty ?? false) error = null;
 
     widget.onChange?.call(value, error);
 

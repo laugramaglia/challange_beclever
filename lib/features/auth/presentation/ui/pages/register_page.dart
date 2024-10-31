@@ -1,4 +1,3 @@
-import 'package:challange_beclever/core/theme/extensions/theme_buttons_extension.dart';
 import 'package:challange_beclever/core/theme/ui/custom_scaffold.dart';
 import 'package:challange_beclever/core/utils/extensions/context.dart';
 import 'package:challange_beclever/features/auth/presentation/bloc/stepper_index/stepper_index_cubit.dart';
@@ -13,15 +12,11 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _Data(
+    return const _Data(
       [
-        IdNumberSection(
-            key: const ValueKey('id-number'), onChange: (value, error) {}),
-        MobileSection(
-            key: const ValueKey('mobile'), onChange: (value, error) {}),
-        const CodeConfirmationSection(
-          key: ValueKey('confirmation-code'),
-        ),
+        IdNumberSection(key: ValueKey('id-number')),
+        MobileSection(key: ValueKey('mobile')),
+        CodeConfirmationSection(key: ValueKey('confirmation-code')),
       ],
     );
   }
@@ -37,24 +32,13 @@ class _Data extends StatelessWidget {
     final indexState = context.watch<StepperIndexCubit>();
     return CustomScaffold(
       titleLabel: 'Crear cuenta',
-      leading: IconButton(
-        icon: indexState.isFirstPage
-            ? const SizedBox.shrink()
-            : Icon(Icons.arrow_back, color: context.colorScheme.onPrimary),
-        onPressed: indexState.isFirstPage ? null : indexState.previousPage,
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: SizedBox(
-          height: 56,
-          child: ElevatedButton(
-            onPressed: () => indexState.nextPage(sections.length),
-            style: context.theme.buttonFilled,
-            child: const Center(child: Text('Continuar')),
-          ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      leading: indexState.isFirstPage
+          ? const SizedBox.shrink()
+          : IconButton(
+              icon:
+                  Icon(Icons.arrow_back, color: context.colorScheme.onPrimary),
+              onPressed: indexState.previousPage,
+            ),
       body: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -66,11 +50,13 @@ class _Data extends StatelessWidget {
               minHeight: 8,
             ),
           ),
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
+          Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 26),
-              child: sections[indexState.state],
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: sections[indexState.state],
+              ),
             ),
           ),
         ],
