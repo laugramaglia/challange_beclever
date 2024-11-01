@@ -23,8 +23,11 @@ dependencies:
 # UI
   pin_code_fields: ^8.0.1
 
-# State Management
+# BLoC
   flutter_bloc: ^8.1.6
+  get_it: ^8.0.2
+  dartz: ^0.10.1
+
 
 
 dev_dependencies:
@@ -41,3 +44,4 @@ flutter:
 
   assets:
     - assets/svg/
+    - assets/png/
