@@ -18,9 +18,10 @@ class MobileSection extends StatelessWidget {
         descriptionLabel: 'Te enviaremos un SMS con código de cuatro digitos',
         onPressedFloatingActionButton: userState.pohneNumber.isEmpty
             ? null
-            : () => context.read<StepperIndexCubit>().nextPage(3),
+            : context.read<StepperIndexCubit>().nextPage,
         children: [
           TextFieldWidget(
+            initialValue: userState.pohneNumber,
             keyboardType: TextInputType.number,
             validators: const [
               TextInputValidators.required,

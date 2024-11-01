@@ -1,9 +1,11 @@
 import 'package:challange_beclever/core/theme/ui/custom_scaffold.dart';
 import 'package:challange_beclever/core/utils/extensions/context.dart';
+import 'package:challange_beclever/features/auth/presentation/bloc/register_user/register_user_cubit.dart';
 import 'package:challange_beclever/features/auth/presentation/bloc/stepper_index/stepper_index_cubit.dart';
 import 'package:challange_beclever/features/auth/presentation/ui/pages/register_sections/id_number_section.dart';
 import 'package:challange_beclever/features/auth/presentation/ui/pages/register_sections/code_confirmation_section.dart';
 import 'package:challange_beclever/features/auth/presentation/ui/pages/register_sections/mobile_section.dart';
+import 'package:challange_beclever/features/auth/presentation/ui/pages/register_sections/new_password_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,6 +19,7 @@ class RegisterPage extends StatelessWidget {
         IdNumberSection(key: ValueKey('id-number')),
         MobileSection(key: ValueKey('mobile')),
         CodeConfirmationSection(key: ValueKey('confirmation-code')),
+        NewPasswordSection(key: ValueKey('new-password')),
       ],
     );
   }
@@ -29,38 +32,50 @@ class _Data extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final indexState = context.watch<StepperIndexCubit>();
-    return CustomScaffold(
-      titleLabel: 'Crear cuenta',
-      leading: indexState.isFirstPage
-          ? const SizedBox.shrink()
-          : IconButton(
-              icon:
-                  Icon(Icons.arrow_back, color: context.colorScheme.onPrimary),
-              onPressed: indexState.previousPage,
-            ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(40),
-            child: LinearProgressIndicator(
-              value: (indexState.state + 1) / sections.length,
-              borderRadius: BorderRadius.circular(20),
-              minHeight: 8,
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 26),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: sections[indexState.state],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<StepperIndexCubit>(
+          create: (context) => StepperIndexCubit(sections.length),
+        ),
+        BlocProvider(
+          create: (context) => RegisterUserCubit(),
+        ),
+      ],
+      child: Builder(builder: (context) {
+        final indexState = context.watch<StepperIndexCubit>();
+        return CustomScaffold(
+          titleLabel: 'Crear cuenta',
+          leading: indexState.isFirstPage
+              ? const SizedBox.shrink()
+              : IconButton(
+                  icon: Icon(Icons.arrow_back,
+                      color: context.colorScheme.onPrimary),
+                  onPressed: indexState.previousPage,
+                ),
+          body: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(40),
+                child: LinearProgressIndicator(
+                  value: (indexState.state + 1) / sections.length,
+                  borderRadius: BorderRadius.circular(20),
+                  minHeight: 8,
+                ),
               ),
-            ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 26),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: sections[indexState.state],
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      }),
     );
   }
 }

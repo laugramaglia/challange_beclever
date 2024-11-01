@@ -17,7 +17,7 @@ class IdNumberSection extends StatelessWidget {
         titleLabel: 'Ingresa tu número de cédula',
         onPressedFloatingActionButton: userState.idNumber.isEmpty
             ? null
-            : () => context.read<StepperIndexCubit>().nextPage(3),
+            : context.read<StepperIndexCubit>().nextPage,
         children: [
           TextFieldWidget(
             initialValue: userState.idNumber,

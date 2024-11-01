@@ -1,32 +1,30 @@
-import 'package:challange_beclever/core/theme/extensions/theme_buttons_extension.dart';
 import 'package:challange_beclever/core/utils/extensions/context.dart';
+import 'package:challange_beclever/features/auth/presentation/ui/widgets/continue_button.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingMainSection extends StatelessWidget {
-  final String? titleLabel, descriptionLabel;
+  final String? titleLabel, descriptionLabel, secondaryButtonLabel;
   final List<Widget> children;
-  final void Function()? onPressedFloatingActionButton;
+  final void Function()? onPressedFloatingActionButton, secondaryOnPressed;
+
   const OnboardingMainSection({
     super.key,
     this.titleLabel,
     this.descriptionLabel,
     required this.children,
     this.onPressedFloatingActionButton,
+    this.secondaryButtonLabel,
+    this.secondaryOnPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: SizedBox(
-          height: 56,
-          child: ElevatedButton(
-            onPressed: onPressedFloatingActionButton,
-            style: context.theme.buttonFilled,
-            child: const Center(child: Text('Continuar')),
-          ),
-        ),
+      floatingActionButton: Continuebutton(
+        onPressed: onPressedFloatingActionButton,
+        label: 'Continuar',
+        secondaryButtonLabel: secondaryButtonLabel,
+        secondaryOnPressed: secondaryOnPressed,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       backgroundColor: Colors.transparent,
