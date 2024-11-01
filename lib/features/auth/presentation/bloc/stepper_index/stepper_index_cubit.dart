@@ -1,12 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StepperIndexCubit extends Cubit<int> {
-  StepperIndexCubit() : super(0);
+  final int lenth;
+  StepperIndexCubit(this.lenth) : super(0);
 
   bool get isFirstPage => state == 0;
 
-  void nextPage(int listLenth) {
-    if (state == listLenth - 1) return;
+  void nextPage() {
+    if (state == lenth - 1) return;
     emit(state + 1);
   }
 

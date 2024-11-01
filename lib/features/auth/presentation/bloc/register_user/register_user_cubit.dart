@@ -13,4 +13,16 @@ class RegisterUserCubit extends Cubit<RegisterUserState> {
   void updatePhoneNumber(String pohneNumber) {
     emit(state.copyWith(pohneNumber: pohneNumber));
   }
+
+  void verifyNumber() {
+    emit(state.copyWith(isNumberVerified: true));
+  }
+
+  void updatePassword(String password) {
+    emit(state.copyWith(password: password));
+  }
+
+  void updateConfirmPassword(String confirmPassword) {
+    emit(state.copyWith(confirmPassword: confirmPassword));
+  }
 }
