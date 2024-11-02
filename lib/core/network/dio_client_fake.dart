@@ -10,7 +10,7 @@ class Response {
 }
 
 class DioClientFake {
-  DioClientFake();
+  const DioClientFake();
 
   // GET METHOD
   Future<Response> get(
@@ -58,7 +58,7 @@ Response _validatePhone(Map<String, dynamic> params) {
   if (params['code'] % 2 == 0 && params['code'] > 3000) {
     // create user just with the phone number
     return Response(
-      data: {"message": "Success"},
+      data: {"message": "Success", 'token': 'bearer-token'},
       statusCode: 201,
     );
   }

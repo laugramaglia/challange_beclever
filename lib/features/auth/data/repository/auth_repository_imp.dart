@@ -33,9 +33,9 @@ class AuthRepositoryImpl implements AuthRepository {
     return result.fold((error) {
       return Left(error);
     }, (data) async {
-      Response response = data;
-
-      return Right(response);
+      authLocalService.setToken(data.data['token']);
+      _controller.add(AuthenticationStatus.authenticated);
+      return Right(data);
     });
   }
 
@@ -58,6 +58,7 @@ class AuthRepositoryImpl implements AuthRepository {
             return Left(error);
           },
           (data) {
+            authLocalService.setToken(data.data['token']);
             _controller.add(AuthenticationStatus.authenticated);
             return Right(data);
           },
