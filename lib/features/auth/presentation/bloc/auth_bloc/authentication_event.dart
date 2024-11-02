@@ -17,4 +17,14 @@ final class VerifyPhone extends AuthenticationEvent {
   });
 }
 
+/// Create Password
+/// As you are authenticated you can create your password
+final class CreatePassword extends AuthenticationEvent {
+  final String password;
+
+  const CreatePassword({
+    required this.password,
+  });
+}
+
 final class LogOut extends AuthenticationEvent {}
