@@ -4,6 +4,7 @@ import 'package:challange_beclever/features/auth/data/source/auth_api_service.da
 import 'package:challange_beclever/features/auth/data/source/auth_local_service.dart';
 import 'package:challange_beclever/features/auth/domain/repository/auth.dart';
 import 'package:challange_beclever/features/auth/domain/usecases/create_password_use_case.dart';
+import 'package:challange_beclever/features/auth/domain/usecases/login_password_use_case.dart';
 import 'package:challange_beclever/features/auth/domain/usecases/logout.dart';
 import 'package:challange_beclever/features/auth/domain/usecases/validate_phone_case.dart';
 import 'package:challange_beclever/features/auth/presentation/bloc/auth_bloc/authentication_bloc.dart';
@@ -66,12 +67,20 @@ void setupServiceLocator() {
     dependsOn: [AuthRepository],
   );
 
+  sl.registerSingletonWithDependencies<LoginPasswordUseCase>(
+    () => LoginPasswordUseCase(
+      authRepository: sl<AuthRepository>(),
+    ),
+    dependsOn: [AuthRepository],
+  );
+
   // Blocs
   sl.registerSingletonWithDependencies<AuthenticationBloc>(
     () => AuthenticationBloc(
       validatePhoneCase: sl<ValidatePhoneCase>(),
       logoutUseCase: sl<LogoutUseCase>(),
       createPasswordUseCase: sl<CreatePasswordUseCase>(),
+      loginPasswordUseCase: sl<LoginPasswordUseCase>(),
     ),
     dependsOn: [ValidatePhoneCase, LogoutUseCase],
   );

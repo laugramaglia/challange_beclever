@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:challange_beclever/core/network/dio_client_fake.dart';
+import 'package:challange_beclever/features/auth/data/models/log_in_req_params.dart';
 import 'package:challange_beclever/features/auth/data/models/validate_phone_req_params.dart';
 import 'package:challange_beclever/features/auth/data/source/auth_api_service.dart';
 import 'package:challange_beclever/features/auth/data/source/auth_local_service.dart';
@@ -30,16 +31,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
 // example
-  Future<Either<String, Response>> logIn({
-    required String phone,
-    required String password,
-  }) async {
+  @override
+  Future<Either<String, Response>> logIn(LogInReqParams param) async {
     // Simulated authentication logic
     // In a real implementation, you'd call an authentication service
-    final response = await authApiService.login(params: {
-      'phone': phone,
-      'password': password,
-    });
+    final response = await authApiService.login(params: param.toMap());
     return await Future.delayed(
       const Duration(seconds: 1),
       () {

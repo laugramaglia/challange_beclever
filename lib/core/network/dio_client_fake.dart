@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,7 +37,7 @@ class DioClientFake {
   // POST METHOD
   Future<Response> post(
     String url, {
-    Map? data,
+    Map<String, dynamic>? data,
     Map<String, dynamic>? queryParameters,
   }) async {
     final Response response = await Future<Response>.delayed(
@@ -56,7 +57,7 @@ class DioClientFake {
   // PATCH METHOD
   Future<Response> patch(
     String url, {
-    Map? data,
+    Map<String, dynamic>? data,
     Map<String, dynamic>? queryParameters,
   }) async {
     final Response response =
@@ -120,7 +121,7 @@ Future<Response> _createPass(String? password) async {
   );
 }
 
-Response _validatePhone(Map? params) {
+Future<Response> _validatePhone(Map<String, dynamic>? params) async {
   if (params == null) {
     return Response(
       data: {"message": "Telefono no valido"},
@@ -130,13 +131,14 @@ Response _validatePhone(Map? params) {
   // Check if code is even (divisible by 2 with no remainder)
   // and greater than 3000
   if (params['code'] % 2 == 0 && params['code'] > 3000) {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     // create user just with the phone number
+
+    final user = {'id': '1', ...params};
+
+    prefs.setString('user', jsonEncode(user));
     return Response(
-      data: {
-        "message": "Success",
-        'token': 'bearer-token',
-        'value': {'id': '1', ...params}
-      },
+      data: {"message": "Success", 'token': 'bearer-token', 'value': user},
       statusCode: 201,
     );
   }
@@ -146,16 +148,18 @@ Response _validatePhone(Map? params) {
   );
 }
 
-Future<Response> _login(Map? params) async {
+Future<Response> _login(Map<String, dynamic>? params) async {
   if (params == null) {
     return Response(
-      data: {"message": "Telefono no valido"},
+      data: {"message": "Credenciales no validas"},
       statusCode: 500,
     );
   }
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final user = prefs.getString('user');
+  final cCedula = params['cedula'];
+  final cPassword = params['password'];
 
   if (user == null) {
     return Response(
@@ -163,8 +167,14 @@ Future<Response> _login(Map? params) async {
       statusCode: 404,
     );
   }
-
   final userJson = jsonDecode(user);
+
+  if (userJson['cedula'] != cCedula || userJson['password'] != cPassword) {
+    return Response(
+      data: {"message": "Credenciales no validas"},
+      statusCode: 401,
+    );
+  }
   return Response(
     data: {"message": "Success", 'token': 'bearer-token', 'value': userJson},
     statusCode: 201,

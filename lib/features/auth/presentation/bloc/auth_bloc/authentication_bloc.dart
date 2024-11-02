@@ -1,7 +1,9 @@
+import 'package:challange_beclever/features/auth/data/models/log_in_req_params.dart';
 import 'package:challange_beclever/features/auth/data/models/user.dart';
 import 'package:challange_beclever/features/auth/data/models/validate_phone_req_params.dart';
 import 'package:challange_beclever/features/auth/domain/entities/user.dart';
 import 'package:challange_beclever/features/auth/domain/usecases/create_password_use_case.dart';
+import 'package:challange_beclever/features/auth/domain/usecases/login_password_use_case.dart';
 import 'package:challange_beclever/features/auth/domain/usecases/logout.dart';
 import 'package:challange_beclever/features/auth/domain/usecases/validate_phone_case.dart';
 import 'package:flutter/foundation.dart';
@@ -17,14 +19,17 @@ class AuthenticationBloc
   final ValidatePhoneCase validatePhoneCase;
   final LogoutUseCase logoutUseCase;
   final CreatePasswordUseCase createPasswordUseCase;
+  final LoginPasswordUseCase loginPasswordUseCase;
 
   AuthenticationBloc({
     required this.validatePhoneCase,
     required this.logoutUseCase,
     required this.createPasswordUseCase,
+    required this.loginPasswordUseCase,
   }) : super(const AuthInitial()) {
     on<VerifyPhone>(_onVerifyPhone);
     on<CreatePassword>(_onCreatePassword);
+    on<LoginPassword>(_onLoginPassword);
     on<LogOut>(_onLogOut);
   }
 
@@ -61,6 +66,23 @@ class AuthenticationBloc
       return;
     }
     emit(AuthSuccess(_user!));
+  }
+
+  Future<void> _onLoginPassword(
+      LoginPassword event, Emitter<AuthenticationState> emit) async {
+    emit(AuthLoading());
+    final response = await loginPasswordUseCase.call(
+        param:
+            LogInReqParams(password: event.password, cedula: event.idNumber));
+
+    response.fold(
+      (errorMessage) => emit(AuthError(errorMessage)),
+      (response) {
+        _user = UserModel.fromMap(response.data['value']);
+
+        emit(AuthSuccess(_user!));
+      },
+    );
   }
 
   Future<void> _onLogOut(

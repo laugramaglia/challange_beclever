@@ -27,4 +27,13 @@ final class CreatePassword extends AuthenticationEvent {
   });
 }
 
+final class LoginPassword extends AuthenticationEvent {
+  final String idNumber;
+  final String password;
+  const LoginPassword({
+    required this.idNumber,
+    required this.password,
+  });
+}
+
 final class LogOut extends AuthenticationEvent {}
