@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:challange_beclever/core/config/bloc/service_locator.dart';
 import 'package:challange_beclever/core/config/router/routes.dart';
 import 'package:challange_beclever/core/theme/mixins/loading_overlay_mixin.dart';
