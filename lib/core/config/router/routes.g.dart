@@ -25,6 +25,12 @@ RouteBase get $homeRoute => GoRouteData.$route(
             GoRouteData.$route(
               path: 'register',
               factory: $RegisterRouteExtension._fromState,
+              routes: [
+                GoRouteData.$route(
+                  path: 'finish',
+                  factory: $FinishRegisterRouteExtension._fromState,
+                ),
+              ],
             ),
           ],
         ),
@@ -97,4 +103,26 @@ extension $RegisterRouteExtension on RegisterRoute {
       context.pushReplacement(location);
 
   void replace(BuildContext context) => context.replace(location);
+}
+
+extension $FinishRegisterRouteExtension on FinishRegisterRoute {
+  static FinishRegisterRoute _fromState(GoRouterState state) =>
+      FinishRegisterRoute(
+        $extra: state.extra as bool,
+      );
+
+  String get location => GoRouteData.$location(
+        '/lander/register/finish',
+      );
+
+  void go(BuildContext context) => context.go(location, extra: $extra);
+
+  Future<T?> push<T>(BuildContext context) =>
+      context.push<T>(location, extra: $extra);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location, extra: $extra);
+
+  void replace(BuildContext context) =>
+      context.replace(location, extra: $extra);
 }

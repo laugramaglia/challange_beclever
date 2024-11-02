@@ -2,33 +2,60 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-enum TextInputValidators { required, email, number, arIdNumber, arMobile }
+enum TextInputValidators {
+  required,
+  email,
+  number,
+  arIdNumber,
+  arMobile,
+  password,
+  custom,
+}
 
 class TextFieldWidget extends StatefulWidget {
+  final String? initialValue;
   final String labelText;
-  final TextEditingController? controller;
   final TextInputType keyboardType;
-  final bool isPass;
   final List<TextInputValidators> validators;
   final List<TextInputFormatter>? inputFormatters;
   final Function(String value, String? error)? onChange;
-  const TextFieldWidget({
+  final String? Function(String? value)? customValidator;
+
+  TextFieldWidget({
     super.key,
+    this.initialValue,
     required this.labelText,
-    this.controller,
     this.keyboardType = TextInputType.text,
-    this.isPass = false,
     this.validators = const [],
+    this.customValidator,
     this.inputFormatters,
     this.onChange,
-  });
+  }) : assert(
+          !(validators.contains(TextInputValidators.custom) &&
+              customValidator == null),
+          'customValidator cannot be null if validators contains TextInputValidators.custom',
+        );
 
   @override
   State<TextFieldWidget> createState() => _TextFieldWidgetState();
 }
 
 class _TextFieldWidgetState extends State<TextFieldWidget> {
+  late final TextEditingController controller;
+
   String? error;
+
+  @override
+  initState() {
+    super.initState();
+    controller = TextEditingController(text: widget.initialValue);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => Column(
@@ -37,11 +64,12 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         children: [
           TextField(
             onChanged: _onChange,
-            onTapOutside: (event) {
+            onTapOutside: (_) {
               FocusScope.of(context).unfocus();
             },
-            controller: widget.controller,
-            obscureText: widget.isPass,
+            controller: controller,
+            obscureText:
+                widget.validators.contains(TextInputValidators.password),
             keyboardType: widget.keyboardType,
             inputFormatters: widget.inputFormatters,
             decoration: InputDecoration(
@@ -94,8 +122,21 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
                       : !RegExp(r'^\d{7}$').hasMatch(value)
                           ? 'Celular invalido'
                           : null,
+          TextInputValidators.password => value.isNotEmpty
+              ? value.length < 8
+                  ? 'Minimo 8 caracteres'
+
+                  // una maxuscula, minuscula y un numero
+                  : !RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$')
+                          .hasMatch(value)
+                      ? 'Al menos una mayuscula, minuscula y un numero'
+                      : null
+              : null,
+          TextInputValidators.custom => widget.customValidator?.call(value)
         }
     ].where((e) => e != null).join(', ');
+
+    if (error?.isEmpty ?? false) error = null;
 
     widget.onChange?.call(value, error);
 
