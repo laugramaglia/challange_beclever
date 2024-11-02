@@ -8,9 +8,12 @@ sealed class AuthenticationEvent {
 final class VerifyPhone extends AuthenticationEvent {
   final String phone;
   final String code;
+  final String cedula;
+
   const VerifyPhone({
     required this.phone,
     required this.code,
+    required this.cedula,
   });
 }
 

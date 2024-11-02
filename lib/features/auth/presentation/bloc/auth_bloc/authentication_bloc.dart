@@ -25,12 +25,16 @@ class AuthenticationBloc
   ) async {
     emit(AuthLoading());
     final res = await validatePhoneCase(
-      param: ValidatePhoneReqParams(phoneNumber: event.phone, code: event.code),
+      param: ValidatePhoneReqParams(
+          phoneNumber: event.phone, code: event.code, cedula: event.cedula),
     );
 
     res.fold(
       (errorMessage) => emit(AuthError(errorMessage)),
-      (_) => _getUser(emit),
+      (response) {
+        final user = UserModel.fromMap(response.data['value']);
+        emit(AuthSuccess(user));
+      },
     );
   }
 
@@ -39,12 +43,5 @@ class AuthenticationBloc
     Emitter<AuthenticationState> emit,
   ) async {
     emit(const AuthInitial());
-  }
-
-  void _getUser(
-    Emitter<AuthenticationState> emit,
-  ) {
-    final user = UserModel(id: '1', phoneNumber: '298364590').toEntity();
-    emit(AuthSuccess(user));
   }
 }

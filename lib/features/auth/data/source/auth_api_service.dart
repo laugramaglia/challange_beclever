@@ -1,5 +1,6 @@
+import 'dart:convert';
+
 import 'package:challange_beclever/core/network/dio_client_fake.dart';
-import 'package:challange_beclever/features/auth/data/models/user.dart';
 import 'package:dartz/dartz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,6 +27,9 @@ class AuthApiServiceImpl extends AuthApiService {
 
     if (response.statusCode == 201) {
       prefs.setString('token', response.data['token']);
+
+      // just saving to validate user later on
+      prefs.setString('user', jsonEncode(response.data['value']));
       return Right(response);
     }
     if (prefs.containsKey('token')) {
@@ -51,12 +55,7 @@ class AuthApiServiceImpl extends AuthApiService {
     final response = await Future.delayed(
         const Duration(seconds: 1),
         () => Response(
-              data: {
-                'user': UserModel(
-                  id: '1',
-                  phoneNumber: '298364590',
-                ).toMap()
-              },
+              data: {'user': jsonDecode(prefs.getString('user')!)},
               statusCode: 200,
             ));
 

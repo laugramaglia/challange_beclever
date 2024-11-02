@@ -87,6 +87,7 @@ class _CodeConfirmationSectionState extends State<CodeConfirmationSection>
                 onCompleted: (value) {
                   sl<AuthenticationBloc>().add(
                     VerifyPhone(
+                      cedula: userState.idNumber,
                       phone: userState.pohneNumber,
                       code: value,
                     ),

@@ -58,7 +58,11 @@ Response _validatePhone(Map<String, dynamic> params) {
   if (params['code'] % 2 == 0 && params['code'] > 3000) {
     // create user just with the phone number
     return Response(
-      data: {"message": "Success", 'token': 'bearer-token'},
+      data: {
+        "message": "Success",
+        'token': 'bearer-token',
+        'value': {'id': '1', ...params}
+      },
       statusCode: 201,
     );
   }
