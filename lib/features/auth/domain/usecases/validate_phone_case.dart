@@ -11,6 +11,6 @@ class ValidatePhoneCase
   ValidatePhoneCase({required this.authRepository});
   @override
   Future<Either<String, Response>> call(
-          {ValidatePhoneReqParams? param}) async =>
-      authRepository.validatePhone(param!);
+          {required ValidatePhoneReqParams param}) async =>
+      authRepository.validatePhone(param);
 }

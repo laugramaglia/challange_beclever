@@ -21,6 +21,7 @@ class AuthRepositoryImpl implements AuthRepository {
     final result = await authApiService.validatePhone(param);
 
     return result.fold((error) {
+      authLocalService.clearToken();
       return Left(error);
     }, (data) async {
       authLocalService.setToken(data.data['token']);
@@ -63,5 +64,10 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<String, Response>> getUser() {
     return authApiService.getUser();
+  }
+
+  @override
+  Future<Either<String, Response>> createPassword(String password) {
+    return authApiService.createPassword(password);
   }
 }
