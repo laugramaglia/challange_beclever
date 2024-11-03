@@ -72,7 +72,7 @@ class _CodeConfirmationSectionState extends State<CodeConfirmationSection>
             key: const ValueKey('code-confirmation'),
             titleLabel: 'Ingresa el código',
             descriptionLabel:
-                'El numero de cuatro digitos que enviamos al 15${userState.pohneNumber}',
+                'El numero de cuatro digitos que enviamos al ${userState.pohneNumber}',
             onPressedFloatingActionButton: !userState.isNumberVerified
                 ? null
                 : context.read<StepperIndexCubit>().nextPage,

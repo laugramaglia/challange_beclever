@@ -115,13 +115,11 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
                       : null,
           TextInputValidators.arMobile => !value.isNotEmpty
               ? null
-              : value.startsWith('15') || value.startsWith('0')
-                  ? 'Sin 0 o 15'
-                  : value.length < 7
-                      ? 'Celular debe tener 7 digitos'
-                      : !RegExp(r'^\d{7}$').hasMatch(value)
-                          ? 'Celular invalido'
-                          : null,
+              : value.length < 10 || value.length > 13
+                  ? 'Celular debe tener entre 10 y 13 digitos'
+                  : !RegExp(r'^\d{2,4}\d{6,9}$').hasMatch(value)
+                      ? 'Celular invalido'
+                      : null,
           TextInputValidators.password => value.isNotEmpty
               ? value.length < 8
                   ? 'Minimo 8 caracteres'
