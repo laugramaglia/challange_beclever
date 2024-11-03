@@ -25,4 +25,8 @@ class RegisterUserCubit extends Cubit<RegisterUserState> {
   void updateConfirmPassword(String confirmPassword) {
     emit(state.copyWith(confirmPassword: confirmPassword));
   }
+
+  void updateUseBiometric(bool useBiometric) {
+    emit(state.copyWith(useBiometric: useBiometric));
+  }
 }

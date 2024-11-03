@@ -107,6 +107,24 @@ class _NewPasswordSectionState extends State<NewPasswordSection>
               }
             },
           ),
+          const SizedBox(height: 22),
+          Row(children: [
+            Checkbox(
+              value: userState.useBiometric,
+              onChanged: (val) {
+                context
+                    .read<RegisterUserCubit>()
+                    .updateUseBiometric(val ?? false);
+              },
+            ),
+            const Flexible(
+              child: Padding(
+                padding: EdgeInsets.only(top: 12, right: 12),
+                child: Text(
+                    'Activar biometría del celular como segundo factor de seguridad (2FA)'),
+              ),
+            ),
+          ])
         ],
       ),
     );
