@@ -23,6 +23,12 @@ class _CodeConfirmationSectionState extends State<CodeConfirmationSection>
     with LoadingOverlayMixin {
   OverlayEntry? _overlayEntry;
 
+  @override
+  void initState() {
+    super.initState();
+    sl<AuthenticationBloc>().add(ResetState());
+  }
+
   void _removeLoadingOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;

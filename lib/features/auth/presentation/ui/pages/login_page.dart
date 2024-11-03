@@ -23,6 +23,12 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> with LoadingOverlayMixin {
   OverlayEntry? _overlayEntry;
 
+  @override
+  void initState() {
+    super.initState();
+    sl<AuthenticationBloc>().add(ResetState());
+  }
+
   void _removeLoadingOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;
@@ -42,105 +48,108 @@ class _LoginPageState extends State<LoginPage> with LoadingOverlayMixin {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthenticationBloc, AuthenticationState>(
-      listener: (context, state) {
-        if (state is AuthSuccess) {
+    return BlocConsumer<AuthenticationBloc, AuthenticationState>(
+      listener: (context, authState) {
+        if (authState is AuthSuccess) {
           _removeLoadingOverlay();
           const HomeRoute().go(context);
         }
-        if (state is AuthError) {
+        if (authState is AuthError) {
           _removeLoadingOverlay();
         }
-        if (state is AuthLoading) {
+        if (authState is AuthLoading) {
           _showOverlay();
         }
       },
-      child: CustomScaffold(
-        titleLabel: 'Iniciar sesion',
-        leading: const SizedBox.shrink(),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 40),
-          child: BlocProvider(
-            create: (context) => LoginPasswordCubit(),
-            child: BlocBuilder<LoginPasswordCubit, LoginPasswordState>(
-              builder: (context, state) {
-                return OnboardingMainSection(
-                    titleLabel: 'Ingresa tus datos',
-                    onPressedFloatingActionButton: !state.hasCredentials
-                        ? null
-                        : () {
-                            sl<AuthenticationBloc>().add(LoginPassword(
-                              idNumber: state.idNumber,
-                              password: state.password,
-                            ));
+      builder: (context, authState) {
+        return CustomScaffold(
+          titleLabel: 'Iniciar sesion',
+          leading: const SizedBox.shrink(),
+          body: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 40),
+            child: BlocProvider(
+              create: (context) => LoginPasswordCubit(),
+              child: BlocBuilder<LoginPasswordCubit, LoginPasswordState>(
+                builder: (context, state) {
+                  return OnboardingMainSection(
+                      titleLabel: 'Ingresa tus datos',
+                      onPressedFloatingActionButton: !state.hasCredentials
+                          ? null
+                          : () {
+                              sl<AuthenticationBloc>().add(LoginPassword(
+                                idNumber: state.idNumber,
+                                password: state.password,
+                              ));
+                            },
+                      secondaryButtonLabel: 'Crear cuenta',
+                      secondaryOnPressed: () {
+                        const RegisterRoute().go(context);
+                      },
+                      children: [
+                        TextFieldWidget(
+                          keyboardType: TextInputType.number,
+                          validators: const [
+                            TextInputValidators.required,
+                            TextInputValidators.arIdNumber,
+                          ],
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(8),
+                            ThousandsSeparatorInputFormatter(),
+                          ],
+                          labelText: 'Cédula',
+                          onChange: (value, error) {
+                            log(state.toString());
+                            if (error == null && value.isNotEmpty) {
+                              context
+                                  .read<LoginPasswordCubit>()
+                                  .updateIdNumber(value);
+                            } else if (state.idNumber.isNotEmpty) {
+                              context
+                                  .read<LoginPasswordCubit>()
+                                  .updateIdNumber('');
+                            }
                           },
-                    secondaryButtonLabel: 'Crear cuenta',
-                    secondaryOnPressed: () {
-                      const RegisterRoute().go(context);
-                    },
-                    children: [
-                      TextFieldWidget(
-                        keyboardType: TextInputType.number,
-                        validators: const [
-                          TextInputValidators.required,
-                          TextInputValidators.arIdNumber,
-                        ],
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(8),
-                          ThousandsSeparatorInputFormatter(),
-                        ],
-                        labelText: 'Cédula',
-                        onChange: (value, error) {
-                          log(state.toString());
-                          if (error == null && value.isNotEmpty) {
-                            context
-                                .read<LoginPasswordCubit>()
-                                .updateIdNumber(value);
-                          } else if (state.idNumber.isNotEmpty) {
-                            context
-                                .read<LoginPasswordCubit>()
-                                .updateIdNumber('');
-                          }
-                        },
-                      ),
-                      const SizedBox(height: 22),
-                      TextFieldWidget(
-                        keyboardType: TextInputType.visiblePassword,
-                        validators: const [
-                          TextInputValidators.required,
-                          TextInputValidators.password
-                        ],
-                        inputFormatters: [
-                          FilteringTextInputFormatter.singleLineFormatter,
-                        ],
-                        labelText: 'Contraseña',
-                        onChange: (value, error) {
-                          if (error == null && value.isNotEmpty) {
-                            context
-                                .read<LoginPasswordCubit>()
-                                .updatePassword(value);
-                          } else if (state.password.isNotEmpty) {
-                            context
-                                .read<LoginPasswordCubit>()
-                                .updatePassword('');
-                          }
-                        },
-                      ),
-                      if (sl<AuthenticationBloc>().state is AuthError) ...[
+                        ),
                         const SizedBox(height: 22),
-                        Text(
-                          (sl<AuthenticationBloc>().state as AuthError).message,
-                          style: context.theme.textTheme.bodyMedium
-                              ?.copyWith(color: context.colorScheme.error),
-                        )
-                      ]
-                    ]);
-              },
+                        TextFieldWidget(
+                          keyboardType: TextInputType.visiblePassword,
+                          validators: const [
+                            TextInputValidators.required,
+                            TextInputValidators.password
+                          ],
+                          inputFormatters: [
+                            FilteringTextInputFormatter.singleLineFormatter,
+                          ],
+                          labelText: 'Contraseña',
+                          onChange: (value, error) {
+                            if (error == null && value.isNotEmpty) {
+                              context
+                                  .read<LoginPasswordCubit>()
+                                  .updatePassword(value);
+                            } else if (state.password.isNotEmpty) {
+                              context
+                                  .read<LoginPasswordCubit>()
+                                  .updatePassword('');
+                            }
+                          },
+                        ),
+                        if (authState is AuthError) ...[
+                          const SizedBox(height: 22),
+                          Text(
+                            authState.message,
+                            style: context.theme.textTheme.bodyMedium
+                                ?.copyWith(color: context.colorScheme.error),
+                          )
+                        ]
+                      ]);
+                },
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
