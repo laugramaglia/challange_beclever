@@ -27,6 +27,7 @@ class AuthenticationBloc
     required this.createPasswordUseCase,
     required this.loginPasswordUseCase,
   }) : super(const AuthInitial()) {
+    on<ResetState>(_onResetState);
     on<VerifyPhone>(_onVerifyPhone);
     on<CreatePassword>(_onCreatePassword);
     on<LoginPassword>(_onLoginPassword);
@@ -90,6 +91,10 @@ class AuthenticationBloc
     Emitter<AuthenticationState> emit,
   ) async {
     await logoutUseCase.call();
+    emit(const AuthInitial());
+  }
+
+  void _onResetState(ResetState event, Emitter<AuthenticationState> emit) {
     emit(const AuthInitial());
   }
 }

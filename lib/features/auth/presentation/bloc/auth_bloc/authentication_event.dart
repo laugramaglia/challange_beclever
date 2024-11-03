@@ -5,6 +5,8 @@ sealed class AuthenticationEvent {
   const AuthenticationEvent();
 }
 
+final class ResetState extends AuthenticationEvent {}
+
 final class VerifyPhone extends AuthenticationEvent {
   final String phone;
   final String code;
