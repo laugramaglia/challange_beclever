@@ -24,9 +24,9 @@ class AuthRepositoryImpl implements AuthRepository {
     return result.fold((error) {
       authLocalService.clearToken();
       return Left(error);
-    }, (data) async {
-      authLocalService.setToken(data.data['token']);
-      return Right(data);
+    }, (d) async {
+      authLocalService.setToken(d.data['token']);
+      return Right(d);
     });
   }
 
