@@ -29,7 +29,7 @@ class MobileSection extends StatelessWidget {
             ],
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(7),
+              LengthLimitingTextInputFormatter(13),
             ],
             labelText: 'Teléfono',
             onChange: (value, error) {
@@ -39,7 +39,10 @@ class MobileSection extends StatelessWidget {
                 context.read<RegisterUserCubit>().updatePhoneNumber('');
               }
             },
-          )
+          ),
+          const SizedBox(height: 16),
+          const Align(
+              alignment: Alignment.centerLeft, child: Text('Sin 0 ni 15'))
         ]);
   }
 }
