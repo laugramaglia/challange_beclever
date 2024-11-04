@@ -7,6 +7,7 @@ sealed class RegisterUserState {
   final bool isNumberVerified;
   final String password;
   final String confirmPassword;
+  final bool useBiometric;
 
   const RegisterUserState({
     required this.idNumber,
@@ -14,6 +15,7 @@ sealed class RegisterUserState {
     required this.isNumberVerified,
     required this.password,
     required this.confirmPassword,
+    required this.useBiometric,
   });
 
   bool get isPasswordMatched =>
@@ -25,11 +27,12 @@ sealed class RegisterUserState {
     bool? isNumberVerified,
     String? password,
     String? confirmPassword,
+    bool? useBiometric,
   });
 
   @override
   String toString() =>
-      'RegisterUserState(idNumber: $idNumber, pohneNumber: $pohneNumber, isNumberVerified: $isNumberVerified)';
+      'RegisterUserState(idNumber: $idNumber, pohneNumber: $pohneNumber, isNumberVerified: $isNumberVerified, password: $password, confirmPassword: $confirmPassword, useBiometric: $useBiometric)';
 }
 
 final class RegisterUserInitial extends RegisterUserState {
@@ -39,6 +42,7 @@ final class RegisterUserInitial extends RegisterUserState {
     super.isNumberVerified = false,
     super.password = '',
     super.confirmPassword = '',
+    super.useBiometric = false,
   });
 
   @override
@@ -48,6 +52,7 @@ final class RegisterUserInitial extends RegisterUserState {
     bool? isNumberVerified,
     String? password,
     String? confirmPassword,
+    bool? useBiometric,
   }) =>
       RegisterUserInitial(
         idNumber: idNumber ?? this.idNumber,
@@ -55,5 +60,6 @@ final class RegisterUserInitial extends RegisterUserState {
         isNumberVerified: isNumberVerified ?? this.isNumberVerified,
         password: password ?? this.password,
         confirmPassword: confirmPassword ?? this.confirmPassword,
+        useBiometric: useBiometric ?? this.useBiometric,
       );
 }

@@ -23,9 +23,11 @@ final class VerifyPhone extends AuthenticationEvent {
 /// As you are authenticated you can create your password
 final class CreatePassword extends AuthenticationEvent {
   final String password;
+  final bool useBiometric;
 
   const CreatePassword({
     required this.password,
+    this.useBiometric = false,
   });
 }
 
