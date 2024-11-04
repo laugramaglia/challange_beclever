@@ -13,13 +13,20 @@ extension ThemeButtonsExtension on ThemeData {
         foregroundColor: txtColor,
         textStyle: textTheme.bodyLarge
             ?.copyWith(fontWeight: FontWeight.bold, height: 3),
-        backgroundColor: backgroundColor,
         elevation: 1,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
       ).copyWith(
-// Optional: Change text color when disabled
+        backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+          (Set<WidgetState> states) {
+            if (states.contains(WidgetState.disabled)) {
+              return Colors
+                  .grey[300]; // Set background color to gray when disabled
+            }
+            return backgroundColor; // Default background color
+          },
+        ),
         side: WidgetStateProperty.resolveWith<BorderSide?>(
           (Set<WidgetState> states) {
             if (states.contains(WidgetState.disabled)) {
