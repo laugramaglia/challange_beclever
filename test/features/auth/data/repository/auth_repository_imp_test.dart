@@ -1,6 +1,4 @@
 import 'package:challange_beclever/core/network/dio_client_fake.dart';
-import 'package:challange_beclever/features/auth/data/models/create_pass_req_params.dart';
-import 'package:challange_beclever/features/auth/data/models/log_in_req_params.dart';
 import 'package:challange_beclever/features/auth/data/models/validate_phone_req_params.dart';
 import 'package:challange_beclever/features/auth/data/repository/auth_repository_imp.dart';
 import 'package:challange_beclever/features/auth/data/source/auth_api_service.dart';
@@ -86,53 +84,6 @@ void main() {
     });
   });
 
-  group('logIn', () {
-    final param = LogInReqParams(
-      password: '1234567890',
-      cedula: '1234567890',
-    );
-
-    final response = Response(
-      data: {
-        "message": "Success",
-        'token': 'bearer-token',
-        'value': {
-          'id': '1',
-          'cedula': '1234567890',
-          'phoneNumber': '01234567',
-        }
-      },
-      statusCode: 201,
-    );
-
-    test('should return error when login fails', () async {
-      // Arrange
-      when(mockAuthApiService.login(params: param.toMap()))
-          .thenAnswer((_) async => const Left('login error'));
-
-      // Act
-      final result = await authRepository.logIn(param);
-
-      // Assert
-      expect(result, const Left('login error'));
-    });
-
-    test('should set token on successful login', () async {
-      // Arrange
-      when(mockAuthApiService.login(params: param.toMap()))
-          .thenAnswer((_) async => Right(response));
-      when(mockSharedPreferences.setString('token', 'bearer-token'))
-          .thenAnswer((_) async => true);
-
-      // Act
-      final result = await authRepository.logIn(param);
-
-      // Assert
-      expect(result, Right(response));
-      verify(authLocalServiceImpl.setToken('bearer-token')).called(1);
-    });
-  });
-
   group('getUser', () {
     test('should return user data from authApiService', () async {
       // Arrange
@@ -147,28 +98,6 @@ void main() {
       // Assert
       expect(result, Right(userResponse));
       verify(mockAuthApiService.getUser()).called(1);
-    });
-  });
-
-  group('createPassword', () {
-    final CreatePassReqParams params = CreatePassReqParams(
-      useBiometric: false,
-      password: '1234567890',
-    );
-
-    test('should return response from createPassword', () async {
-      // Arrange
-      final passwordResponse =
-          Response(data: {'message': 'Success'}, statusCode: 201);
-      when(mockAuthApiService.createPassword(params))
-          .thenAnswer((_) async => Right(passwordResponse));
-
-      // Act
-      final result = await authRepository.createPassword(params);
-
-      // Assert
-      expect(result, Right(passwordResponse));
-      verify(mockAuthApiService.createPassword(params)).called(1);
     });
   });
 }

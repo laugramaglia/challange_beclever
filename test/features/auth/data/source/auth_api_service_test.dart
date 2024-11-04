@@ -17,15 +17,13 @@ void main() {
     authApiService = AuthApiServiceImpl(network: mockNetwork);
   });
   group('validatePhone group', () {
-    late final ValidatePhoneReqParams params;
-    late final Response successResponse;
-    setUp(() {
-      params = ValidatePhoneReqParams(
+    test('validatePhone returns Right when status code is 201', () async {
+      final ValidatePhoneReqParams params = ValidatePhoneReqParams(
         phoneNumber: '1234567',
         code: '993456',
         cedula: '80925632',
       );
-      successResponse = Response(
+      final Response successResponse = Response(
         data: {
           "message": "Success",
           'token': 'bearer-token',
@@ -37,9 +35,6 @@ void main() {
         },
         statusCode: 201,
       );
-    });
-
-    test('validatePhone returns Right when status code is 201', () async {
       // Mocking the network response
       when(mockNetwork.post('/validate-phone', data: params.toMap()))
           .thenAnswer((_) async => successResponse);
@@ -52,6 +47,12 @@ void main() {
     });
 
     test('validatePhone returns Left with error message on failure', () async {
+      final ValidatePhoneReqParams params = ValidatePhoneReqParams(
+        phoneNumber: '1234567',
+        code: '993456',
+        cedula: '80925632',
+      );
+
       final errorResponse = Response(
         statusCode: 400,
         data: {'message': 'Invalid phone number'},
