@@ -3,6 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class AuthLocalService {
   Future<void> logout();
 
+  bool? getUseBiometric();
+  Future<bool> setUseBiometric(bool useBiometric);
+
   // Handle token
   String? getToken();
   Future<bool> setToken(String token);
@@ -29,6 +32,14 @@ class AuthLocalServiceImpl extends AuthLocalService {
       return await sharedPreferences.remove('token');
     }
     return null;
+  }
+
+  @override
+  bool? getUseBiometric() => sharedPreferences.getBool('useBiometric');
+
+  @override
+  Future<bool> setUseBiometric(bool useBiometric) async {
+    return await sharedPreferences.setBool('useBiometric', useBiometric);
   }
 
   @override

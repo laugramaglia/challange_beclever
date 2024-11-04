@@ -8,7 +8,9 @@ import 'package:challange_beclever/features/auth/domain/usecases/login_password_
 import 'package:challange_beclever/features/auth/domain/usecases/logout.dart';
 import 'package:challange_beclever/features/auth/domain/usecases/validate_phone_case.dart';
 import 'package:challange_beclever/features/auth/presentation/bloc/auth_bloc/authentication_bloc.dart';
+import 'package:challange_beclever/features/auth/presentation/bloc/biometric/biometric_dart_cubit.dart';
 import 'package:get_it/get_it.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
@@ -36,11 +38,20 @@ void setupServiceLocator() {
     );
   });
 
+  sl.registerSingleton<LocalAuthentication>(LocalAuthentication());
+
+  sl.registerSingleton<BiometricDartCubit>(
+    BiometricDartCubit(
+      localAuth: sl<LocalAuthentication>(),
+    ),
+  );
+
   // Repositories
   sl.registerSingletonWithDependencies<AuthRepository>(
     () => AuthRepositoryImpl(
       authApiService: sl<AuthApiService>(),
       authLocalService: sl<AuthLocalService>(),
+      localAuth: sl<LocalAuthentication>(),
     ),
     dependsOn: [AuthLocalService],
   );

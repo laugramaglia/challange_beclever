@@ -1,4 +1,5 @@
 import 'package:challange_beclever/core/network/dio_client_fake.dart';
+import 'package:challange_beclever/features/auth/data/models/create_pass_req_params.dart';
 import 'package:challange_beclever/features/auth/data/models/log_in_req_params.dart';
 import 'package:challange_beclever/features/auth/data/models/validate_phone_req_params.dart';
 import 'package:challange_beclever/features/auth/data/repository/auth_repository_imp.dart';
@@ -6,27 +7,31 @@ import 'package:challange_beclever/features/auth/data/source/auth_api_service.da
 import 'package:challange_beclever/features/auth/data/source/auth_local_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'auth_repository_imp_test.mocks.dart';
 
-@GenerateMocks([AuthApiService, SharedPreferences])
+@GenerateMocks([AuthApiService, SharedPreferences, LocalAuthentication])
 void main() {
   late MockAuthApiService mockAuthApiService;
   late AuthRepositoryImpl authRepository;
   late MockSharedPreferences mockSharedPreferences;
   late AuthLocalServiceImpl authLocalServiceImpl;
+  late MockLocalAuthentication localAuth;
 
   setUp(() {
     mockSharedPreferences = MockSharedPreferences();
     authLocalServiceImpl =
         AuthLocalServiceImpl(sharedPreferences: mockSharedPreferences);
     mockAuthApiService = MockAuthApiService();
+    localAuth = MockLocalAuthentication();
     authRepository = AuthRepositoryImpl(
       authLocalService: authLocalServiceImpl,
       authApiService: mockAuthApiService,
+      localAuth: localAuth,
     );
   });
 
@@ -146,21 +151,24 @@ void main() {
   });
 
   group('createPassword', () {
-    const password = 'new_password';
+    final CreatePassReqParams params = CreatePassReqParams(
+      useBiometric: false,
+      password: '1234567890',
+    );
 
     test('should return response from createPassword', () async {
       // Arrange
       final passwordResponse =
           Response(data: {'message': 'Success'}, statusCode: 201);
-      when(mockAuthApiService.createPassword(password))
+      when(mockAuthApiService.createPassword(params))
           .thenAnswer((_) async => Right(passwordResponse));
 
       // Act
-      final result = await authRepository.createPassword(password);
+      final result = await authRepository.createPassword(params);
 
       // Assert
       expect(result, Right(passwordResponse));
-      verify(mockAuthApiService.createPassword(password)).called(1);
+      verify(mockAuthApiService.createPassword(params)).called(1);
     });
   });
 }

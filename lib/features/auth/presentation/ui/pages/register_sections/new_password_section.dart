@@ -2,6 +2,7 @@ import 'package:challange_beclever/core/config/bloc/service_locator.dart';
 import 'package:challange_beclever/core/config/router/routes.dart';
 import 'package:challange_beclever/core/theme/mixins/loading_overlay_mixin.dart';
 import 'package:challange_beclever/features/auth/presentation/bloc/auth_bloc/authentication_bloc.dart';
+import 'package:challange_beclever/features/auth/presentation/bloc/biometric/biometric_dart_cubit.dart';
 import 'package:challange_beclever/features/auth/presentation/bloc/register_user/register_user_cubit.dart';
 import 'package:challange_beclever/features/auth/presentation/ui/widgets/onboarding_main_section.dart';
 import 'package:challange_beclever/features/auth/presentation/ui/widgets/text_field_widget.dart';
@@ -59,8 +60,10 @@ class _NewPasswordSectionState extends State<NewPasswordSection>
         onPressedFloatingActionButton: !userState.isPasswordMatched
             ? null
             : () {
-                sl<AuthenticationBloc>()
-                    .add(CreatePassword(password: userState.password));
+                sl<AuthenticationBloc>().add(CreatePassword(
+                  password: userState.password,
+                  useBiometric: userState.useBiometric,
+                ));
               },
         children: [
           TextFieldWidget(
@@ -108,25 +111,43 @@ class _NewPasswordSectionState extends State<NewPasswordSection>
             },
           ),
           const SizedBox(height: 22),
-          Row(children: [
-            Checkbox(
-              value: userState.useBiometric,
-              onChanged: (val) {
-                context
-                    .read<RegisterUserCubit>()
-                    .updateUseBiometric(val ?? false);
-              },
-            ),
-            const Flexible(
-              child: Padding(
-                padding: EdgeInsets.only(top: 12, right: 12),
-                child: Text(
-                    'Activar biometría del celular como segundo factor de seguridad (2FA)'),
-              ),
-            ),
-          ])
+          const _Biametrics()
         ],
       ),
+    );
+  }
+}
+
+class _Biametrics extends StatelessWidget {
+  const _Biametrics();
+
+  @override
+  Widget build(BuildContext context) {
+    final userState = context.watch<RegisterUserCubit>().state;
+
+    return BlocBuilder<BiometricDartCubit, BiometricDartState>(
+      builder: (context, state) {
+        if (state is BiometricUnavailable) {
+          return Text(state.reason);
+        }
+        return Row(children: [
+          Checkbox(
+            value: userState.useBiometric,
+            onChanged: (val) {
+              context
+                  .read<RegisterUserCubit>()
+                  .updateUseBiometric(val ?? false);
+            },
+          ),
+          const Flexible(
+            child: Padding(
+              padding: EdgeInsets.only(top: 12, right: 12),
+              child: Text(
+                  'Activar biometría del celular como segundo factor de seguridad (2FA)'),
+            ),
+          ),
+        ]);
+      },
     );
   }
 }

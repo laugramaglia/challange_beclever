@@ -1,4 +1,5 @@
 import 'package:challange_beclever/core/network/dio_client_fake.dart';
+import 'package:challange_beclever/features/auth/data/models/create_pass_req_params.dart';
 import 'package:dartz/dartz.dart';
 
 import '../models/validate_phone_req_params.dart';
@@ -6,7 +7,7 @@ import '../models/validate_phone_req_params.dart';
 abstract class AuthApiService {
   Future<Either<String, Response>> validatePhone(ValidatePhoneReqParams params);
 
-  Future<Either<String, Response>> createPassword(String password);
+  Future<Either<String, Response>> createPassword(CreatePassReqParams req);
   Future<Either<String, Response>> login(
       {required Map<String, dynamic> params});
 
@@ -53,9 +54,10 @@ class AuthApiServiceImpl extends AuthApiService {
   }
 
   @override
-  Future<Either<String, Response>> createPassword(String password) async {
+  Future<Either<String, Response>> createPassword(
+      CreatePassReqParams req) async {
     final resposponse =
-        await network.patch('/create-password', data: {'password': password});
+        await network.patch('/create-password', data: req.toMap());
 
     if (resposponse.statusCode == 201) {
       return Right(resposponse);

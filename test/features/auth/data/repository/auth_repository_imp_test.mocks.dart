@@ -6,13 +6,19 @@
 import 'dart:async' as _i4;
 
 import 'package:challange_beclever/core/network/dio_client_fake.dart' as _i5;
+import 'package:challange_beclever/features/auth/data/models/create_pass_req_params.dart'
+    as _i7;
 import 'package:challange_beclever/features/auth/data/models/validate_phone_req_params.dart'
     as _i6;
 import 'package:challange_beclever/features/auth/data/source/auth_api_service.dart'
     as _i3;
 import 'package:dartz/dartz.dart' as _i2;
+import 'package:local_auth/src/local_auth.dart' as _i9;
+import 'package:local_auth_android/local_auth_android.dart' as _i10;
+import 'package:local_auth_darwin/local_auth_darwin.dart' as _i11;
+import 'package:local_auth_windows/local_auth_windows.dart' as _i12;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:shared_preferences/src/shared_preferences_legacy.dart' as _i7;
+import 'package:shared_preferences/src/shared_preferences_legacy.dart' as _i8;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -65,18 +71,18 @@ class MockAuthApiService extends _i1.Mock implements _i3.AuthApiService {
 
   @override
   _i4.Future<_i2.Either<String, _i5.Response>> createPassword(
-          String? password) =>
+          _i7.CreatePassReqParams? req) =>
       (super.noSuchMethod(
         Invocation.method(
           #createPassword,
-          [password],
+          [req],
         ),
         returnValue: _i4.Future<_i2.Either<String, _i5.Response>>.value(
             _FakeEither_0<String, _i5.Response>(
           this,
           Invocation.method(
             #createPassword,
-            [password],
+            [req],
           ),
         )),
       ) as _i4.Future<_i2.Either<String, _i5.Response>>);
@@ -121,7 +127,7 @@ class MockAuthApiService extends _i1.Mock implements _i3.AuthApiService {
 /// A class which mocks [SharedPreferences].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSharedPreferences extends _i1.Mock implements _i7.SharedPreferences {
+class MockSharedPreferences extends _i1.Mock implements _i8.SharedPreferences {
   MockSharedPreferences() {
     _i1.throwOnMissingStub(this);
   }
@@ -297,4 +303,72 @@ class MockSharedPreferences extends _i1.Mock implements _i7.SharedPreferences {
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+}
+
+/// A class which mocks [LocalAuthentication].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockLocalAuthentication extends _i1.Mock
+    implements _i9.LocalAuthentication {
+  MockLocalAuthentication() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<bool> get canCheckBiometrics => (super.noSuchMethod(
+        Invocation.getter(#canCheckBiometrics),
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
+
+  @override
+  _i4.Future<bool> authenticate({
+    required String? localizedReason,
+    Iterable<_i10.AuthMessages>? authMessages = const [
+      _i11.IOSAuthMessages(),
+      _i10.AndroidAuthMessages(),
+      _i12.WindowsAuthMessages(),
+    ],
+    _i10.AuthenticationOptions? options = const _i10.AuthenticationOptions(),
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #authenticate,
+          [],
+          {
+            #localizedReason: localizedReason,
+            #authMessages: authMessages,
+            #options: options,
+          },
+        ),
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
+
+  @override
+  _i4.Future<bool> stopAuthentication() => (super.noSuchMethod(
+        Invocation.method(
+          #stopAuthentication,
+          [],
+        ),
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
+
+  @override
+  _i4.Future<bool> isDeviceSupported() => (super.noSuchMethod(
+        Invocation.method(
+          #isDeviceSupported,
+          [],
+        ),
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
+
+  @override
+  _i4.Future<List<_i10.BiometricType>> getAvailableBiometrics() =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getAvailableBiometrics,
+          [],
+        ),
+        returnValue:
+            _i4.Future<List<_i10.BiometricType>>.value(<_i10.BiometricType>[]),
+      ) as _i4.Future<List<_i10.BiometricType>>);
 }

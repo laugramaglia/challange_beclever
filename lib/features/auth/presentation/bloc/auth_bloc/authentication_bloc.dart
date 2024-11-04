@@ -1,3 +1,4 @@
+import 'package:challange_beclever/features/auth/data/models/create_pass_req_params.dart';
 import 'package:challange_beclever/features/auth/data/models/log_in_req_params.dart';
 import 'package:challange_beclever/features/auth/data/models/user.dart';
 import 'package:challange_beclever/features/auth/data/models/validate_phone_req_params.dart';
@@ -61,7 +62,9 @@ class AuthenticationBloc
     Emitter<AuthenticationState> emit,
   ) async {
     emit(AuthLoading());
-    await createPasswordUseCase.call(param: event.password);
+    await createPasswordUseCase.call(
+        param: CreatePassReqParams(
+            password: event.password, useBiometric: event.useBiometric));
     if (_user == null) {
       emit(const AuthError('User not found'));
       return;
